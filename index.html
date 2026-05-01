@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yarıçap Konum Analiz Aracı</title>
+  <meta name="description" content="Verilen koordinat ve yarıçap içindeki Türkiye konumlarını analiz eden CBS aracı." />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-icon">🎯</div>
+      <h1 class="header-title">
+        Yarıçap <span>Konum</span> Analiz
+      </h1>
+    </div>
+    <span class="header-badge">CBS ARACI v2.0</span>
+  </header>
+
+  <main class="app-layout">
+
+    <aside class="sidebar">
+
+      <div class="panel-section">
+        <div class="section-label">Koordinat Girişi</div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-lat">
+            <span class="label-icon">↕</span> Enlem
+          </label>
+          <input
+            class="form-input"
+            id="input-lat"
+            type="number"
+            step="any"
+            min="-90"
+            max="90"
+            placeholder="ör: 39.9334"
+            value="39.9334"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-lng">
+            <span class="label-icon">↔</span> Boylam
+          </label>
+          <input
+            class="form-input"
+            id="input-lng"
+            type="number"
+            step="any"
+            min="-180"
+            max="180"
+            placeholder="ör: 32.8597"
+            value="32.8597"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-radius">
+            <span class="label-icon">◎</span> Yarıçap
+          </label>
+          <div class="input-wrapper">
+            <input
+              class="form-input"
+              id="input-radius"
+              type="number"
+              step="any"
+              min="1"
+              max="5000"
+              placeholder="ör: 250"
+              value="250"
+              autocomplete="off"
+              style="padding-right: 44px;"
+            />
+            <span class="input-unit">KM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-label">Aksiyonlar</div>
+
+        <button class="btn btn-primary" id="btn-analyze">
+          <div class="btn-spinner"></div>
+          <span class="btn-text">🗺 Haritada Çiz ve Bul</span>
+        </button>
+
+        <button class="btn btn-secondary" id="btn-excel">
+          <div class="btn-spinner"></div>
+          <span class="btn-text">📥 Excel Olarak İndir</span>
+        </button>
+
+        <button class="btn btn-ghost" id="btn-img">
+          <div class="btn-spinner"></div>
+          <span class="btn-text">📷 Harita Görselini İndir</span>
+        </button>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-card">
+          <div class="stat-value" id="count-found">0</div>
+          <div class="stat-label">Bulunan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="count-total">—</div>
+          <div class="stat-label">Toplam</div>
+        </div>
+      </div>
+
+      <div class="results-section">
+        <div class="section-label">Bulunan Konumlar</div>
+
+        <div class="table-wrapper">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th data-col="type"     onclick="sortBy('type')">Tür</th>
+                <th data-col="name"     onclick="sortBy('name')">İsim</th>
+                <th data-col="lat"      onclick="sortBy('lat')">Enlem</th>
+                <th data-col="lng"      onclick="sortBy('lng')">Boylam</th>
+                <th data-col="distance" onclick="sortBy('distance')">Uzaklık</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="5" class="empty-state">
+                  <span class="empty-icon">🗺️</span>
+                  Analiz başlatılmadı. Koordinatları girin ve butona basın.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="map-area">
+      <div id="map"></div>
+
+      <div class="map-overlay-top">
+        <div class="map-badge">
+          <div class="dot"></div>
+          CANLI HARİTA
+        </div>
+      </div>
+
+      <div class="map-loading" id="map-loading">
+        <div class="map-loading-spinner"></div>
+        <div class="map-loading-text">Analiz ediliyor...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="anonymous"></script>
+
+  <!-- SheetJS (XLSX) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" crossorigin="anonymous"></script>
+
+  <!-- html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+
+  <!-- App JS -->
+  <script src="app.js"></script>
+
+  <script>
+    const observer = new MutationObserver(() => {
+      const countEl = document.getElementById('count-found');
+      const count = parseInt(countEl.textContent) || 0;
+      document.getElementById('btn-excel').disabled = count === 0;
+    });
+    observer.observe(document.getElementById('count-found'), { childList: true, characterData: true, subtree: true });
+  </script>
+
+</body>
+</html>

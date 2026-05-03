@@ -1,0 +1,28 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+        #map { position: absolute; top: 0; left: 420px; right: 0; bottom: 0; z-index: 1; }
+        .sidebar { position: absolute; top: 0; left: 0; width: 420px; height: 100%; background: white; z-index: 10; overflow-y: auto; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        .custom-marker { background: #ef4444; border: 2px solid white; border-radius: 50%; width: 12px; height: 12px; }
+        .circle-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
+        .circle-item:hover { background: #f3f4f6; }
+        .coord-input { font-family: monospace; font-size: 13px; }
+        .btn { padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-blue:hover { background: #2563eb; }
+        .btn-green { background: #22c55e; color: white; }
+        .btn-green:hover { background: #16a34a; }
+        .btn-gray { background: #e5e7eb; color: #374151; }
+        .btn-gray:hover { background: #d1d5db; }
+        .btn-red { background: #fee2e2; color: #dc2626; }
+        .btn-red:hover { background: #fecaca; }
+        .btn-purple { background: #9333ea; color: white; }
+        .btn-purple:hover { background: #7c3aed; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: white; border-radius: 8px; width: 90%; max-width: 800px; max-height: 80vh; display: flex; flex-direction: column; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f3f4f6; font-weight: 600; position: sticky; top: 0; }
+        tr:hover { background: #f9fafb; }
+        .loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: white; padding: 20px 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 2000; display: none; }
+        .loading.active { display: block; }

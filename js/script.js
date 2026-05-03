@@ -134,7 +134,7 @@ function exportExcel() {
     const rows = [['Sıra','İl','İlçe','Uzaklık (km)','İlçe Enlem','İlçe Boylam','Daire No','Daire Yarıçap (km)','Daire Merkez Enlem','Daire Merkez Boylam']];
     data.forEach((d,i) => rows.push([i+1, d.province, d.district, d.distance, d.lat, d.lng, d.circleId, d.circleRadius, d.circleCenterLat, d.circleCenterLng]));
 
-    // Simple CSV export (no external lib needed)
+    
     let csv = rows.map(r => r.join(';')).join('\n');
     const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
@@ -156,7 +156,7 @@ function exportTXT() {
 function exportImage() {
     const loading = document.getElementById('loading');
     loading.style.display = 'block';
-    loading.innerHTML = '<div style="text-align:center;"><div style="font-size:24px;margin-bottom:8px;">📸</div><div>Harita görüntüsü oluşturuluyor...</div></div>';
+    loading.innerHTML = '<div style="text-align:center;"><div style="font-size:24px;margin-bottom:8px;"></div><div>Harita görüntüsü oluşturuluyor...</div></div>';
 
     // Hide UI elements temporarily for clean capture
     const sidebar = document.querySelector('.sidebar');
@@ -234,7 +234,7 @@ function previewPrint() {
 function printMapArcGIS(isPreview) {
     const loading = document.getElementById('loading');
     loading.style.display = 'block';
-    loading.innerHTML = '<div style="text-align:center;"><div style="font-size:32px;margin-bottom:12px;">' + (isPreview ? '👁️' : '🖨️') + '</div><div style="font-size:16px;font-weight:bold;">' + (isPreview ? 'Önizleme hazırlanıyor...' : 'Harita çıktısı hazırlanıyor...') + '</div><div style="font-size:12px;color:#6b7280;margin-top:8px;">Lütfen bekleyin</div></div>';
+    loading.innerHTML = '<div style="text-align:center;"><div style="font-size:32px;margin-bottom:12px;">' + (isPreview ? '' : '') + '</div><div style="font-size:16px;font-weight:bold;">' + (isPreview ? 'Önizleme hazırlanıyor...' : 'Harita çıktısı hazırlanıyor...') + '</div><div style="font-size:12px;color:#6b7280;margin-top:8px;">Lütfen bekleyin</div></div>';
 
     // Get all user settings
     const title = document.getElementById('printTitle').value || 'Harita';
